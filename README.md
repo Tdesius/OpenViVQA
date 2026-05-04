@@ -172,9 +172,9 @@ Notebook: `Evaluation_All_Models.ipynb`
 Dự án được thực hiện bởi sinh viên  
 **Khoa Công nghệ Thông tin – Đại học Tôn Đức Thắng (TDTU)**
 
-- [Tên Thành Viên 1] – MSSV: [MSSV]
-- [Tên Thành Viên 2] – MSSV: [MSSV]
-- [Tên Thành Viên 3] – MSSV: [MSSV]
+- Phạm Quốc Hưng – MSSV: 523H0135
+- Đinh Bùi Khánh Huy – MSSV: 523H0136
+- Nguyễn Đông Quân – MSSV: 523H0171
 
 ---
 
