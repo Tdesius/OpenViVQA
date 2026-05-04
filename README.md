@@ -29,7 +29,7 @@ Kết quả được đánh giá trên tập kiểm thử OpenViVQA với các �
 ├── app.py                      # Giao diện Demo (Gradio) tích hợp cả 5 mô hình
 ├── vocab.json                  # Từ điển câu trả lời cho mô hình A1, A2
 ├── notebooks/
-│   ├── a1-a2.ipynb             # Huấn luyện mô hình Modular (A1 & A2)
+│   ├── A1_A2.ipynb             # Huấn luyện mô hình Modular (A1 & A2)
 │   ├── ZeroShot_B1_Model.ipynb  # Đánh giá khả năng Zero-shot (B1)
 │   ├── Fintuning_B2_model.ipynb # Tinh chỉnh mô hình bằng QLoRA (B2 SFT)
 │   ├── RLHF_DPO_Finetuning.ipynb# Tối ưu hóa bằng DPO (B2 DPO)
@@ -39,6 +39,21 @@ Kết quả được đánh giá trên tập kiểm thử OpenViVQA với các �
 ├── qwen2vl_dpo_final/          # Trọng số tối ưu hóa (LoRA Adapter) của B2 DPO
 └── data/openvivqa/             # Dữ liệu hình ảnh và câu hỏi (tự động tải)
 ```
+
+## Pretrained Models
+
+Model weights are hosted on HuggingFace due to file size constraints.
+
+📦 **Download:** https://huggingface.co/HarryT1211/DL_VQA/tree/main
+
+### How to download
+```python
+from huggingface_hub import hf_hub_download, snapshot_download
+
+# Download toàn bộ model
+snapshot_download(repo_id="HarryT1211/DL_VQA", local_dir="./A1_A2_model")
+```
+
 
 ## 📦 Dữ liệu (Dataset)
 
