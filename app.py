@@ -17,7 +17,7 @@ warnings.filterwarnings("ignore")
 CKPT_A1        = "A1_A2_model/best_a1.pth"
 CKPT_A2        = "A1_A2_model/best_a2.pth"
 QWEN_BASE_ID   = "Qwen/Qwen2-VL-2B-Instruct"
-SFT_ADAPTER    = "./qwen2vl_finetuned_final"
+SFT_ADAPTER    = "./qwen2vl_finetuned_final/qwen2vl_b2_final"
 DPO_ADAPTER    = "./qwen2vl_dpo_final"
 VOCAB_PATH     = "vocab.json"
 
@@ -298,11 +298,13 @@ def predict(image, question, model_key):
 
     t0 = time.time()
     try:
-        if model_key in ("A1", "A2"):
-            answer = _infer_ab(model_key, image, question)
-        elif model_key == "B1":
+        if model_key.startswith("A1"):
+            answer = _infer_ab("A1", image, question)
+        elif model_key.startswith("A2"):
+            answer = _infer_ab("A2", image, question)
+        elif model_key.startswith("B1"):
             answer = _infer_qwen(_load_b1(), image, question)
-        elif model_key == "B2 (SFT)":
+        elif "B2 (SFT)" in model_key:
             m = _load_b2()
             answer = _infer_qwen(m, image, question) if m else "B2 chưa được train."
         elif model_key == "B2 (DPO)":
@@ -350,7 +352,7 @@ with gr.Blocks(
 ) as demo:
 
     gr.Markdown(DESCRIPTION)
-    gr.Divider()
+    gr.HTML("<hr>")
 
     with gr.Row():
         with gr.Column(scale=1):
@@ -399,7 +401,7 @@ with gr.Blocks(
         outputs=[answer_out, time_out]
     )
 
-    gr.Divider()
+    gr.HTML("<hr>")
     gr.Markdown(
         "*Đồ án môn học — Fine-tuning Qwen2-VL cho bài toán VQA tiếng Việt (OpenViVQA).*",
         elem_classes=["time-box"]
