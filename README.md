@@ -166,7 +166,7 @@ Notebook: `Evaluation_All_Models.ipynb`
 
 ---
 
-## 👥 Tác giả (Authors)
+## Tác giả (Authors)
 
 Dự án được thực hiện bởi sinh viên  
 **Khoa Công nghệ Thông tin – Đại học Tôn Đức Thắng (TDTU)**
