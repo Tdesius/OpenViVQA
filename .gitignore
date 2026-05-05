@@ -1,0 +1,30 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.env
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Dữ liệu
+data/openvivqa/
+*.zip
+
+# Trọng số mô hình
+A1_A2_model/*.pth
+saved_models/
+qwen2vl_finetuned_final/
+qwen2vl_dpo_final/
+checkpoint-*/
+
+# Kết quả & Logs
+results/
+sft_vs_dpo.png
+evaluation_results.png
+*.log
+
+# VS Code / IDE
+.vscode/
+.idea/
