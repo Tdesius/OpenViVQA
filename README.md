@@ -34,10 +34,10 @@ Kết quả được đánh giá trên tập kiểm thử OpenViVQA với các �
 │   ├── Fintuning_B2_model.ipynb # Tinh chỉnh mô hình bằng QLoRA (B2 SFT)
 │   ├── RLHF_DPO_Finetuning.ipynb# Tối ưu hóa bằng DPO (B2 DPO)
 │   └── Evaluation_All_Models.ipynb # Đánh giá tổng hợp và so sánh chéo
-├── A1_A2_model/                # Lưu trữ trọng số mô hình A1, A2 (.pth)
-├── qwen2vl_finetuned_final/    # Trọng số tinh chỉnh (LoRA Adapter) của B2 SFT
-├── qwen2vl_dpo_final/          # Trọng số tối ưu hóa (LoRA Adapter) của B2 DPO
-└── data/openvivqa/             # Dữ liệu hình ảnh và câu hỏi (tự động tải)
+├── data/openvivqa/             # Dữ liệu hình ảnh và câu hỏi (tự động tải)
+├── .gitignore             # File chặn các file rác/nặng
+├── requirements.txt       # Danh sách thư viện
+└── README.md              # Giới thiệu dự án
 ```
 
 ## Pretrained Models
