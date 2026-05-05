@@ -71,8 +71,7 @@ Dự án sử dụng bộ dữ liệu **OpenViVQA** (Open Vietnamese Visual Ques
 
 Cài đặt các thư viện cần thiết để chạy huấn luyện và giao diện demo:
 ```bash
-pip install torch torchvision transformers peft accelerate bitsandbytes \
-            gradio evaluate bert-score rouge-score nltk huggingface_hub
+pip install -r requirements.txt
 ```
 ## 🖥️ Chạy Demo
 
