@@ -1,8 +1,8 @@
-# OpenViVQA — Vietnamese Visual Question Answering
+# OpenViVQA - Vietnamese Visual Question Answering
 
 Hệ thống trả lời câu hỏi dựa trên hình ảnh (Visual Question Answering - VQA) cho các hình ảnh thực tế tại Việt Nam (open-domain). Dự án nghiên cứu và so sánh 5 kiến trúc mô hình khác nhau, từ các kiến trúc Modular truyền thống đến các mô hình hội tụ đa phương thức (Multimodal Foundation Models) hiện đại nhất.
 
-## 🤖 Danh sách mô hình
+## Danh sách mô hình
 
 | Model | Kiến trúc | Ghi chú |
 |-------|-----------|---------|
@@ -12,7 +12,7 @@ Hệ thống trả lời câu hỏi dựa trên hình ảnh (Visual Question Ans
 | **B2 (SFT)** | Qwen2-VL-2B + QLoRA | Tinh chỉnh (Fine-tuning) mô hình Qwen2-VL trên tập dữ liệu OpenViVQA. |
 | **B2 (DPO)** | Qwen2-VL-2B + RLHF | Tối ưu hóa mô hình sau SFT bằng kỹ thuật Direct Preference Optimization (DPO). |
 
-## 📊 Kết quả thực nghiệm
+## Kết quả thực nghiệm
 
 Kết quả được đánh giá trên tập kiểm thử OpenViVQA với các độ đo chính:
 
@@ -24,7 +24,7 @@ Kết quả được đánh giá trên tập kiểm thử OpenViVQA với các �
 
 *Lưu ý: Kết quả trên được trích xuất từ file `Evaluation_All_Models.ipynb`. Mô hình A2 cho thấy sự vượt trội rõ rệt so với A1 nhờ cơ chế Attention linh hoạt của Transformer.*
 
-## 📁 Cấu trúc dự án
+## Cấu trúc dự án
 ```text
 ├── app.py                      # Giao diện Demo (Gradio) tích hợp cả 5 mô hình
 ├── vocab.json                  # Từ điển câu trả lời cho mô hình A1, A2
@@ -44,7 +44,7 @@ Kết quả được đánh giá trên tập kiểm thử OpenViVQA với các �
 
 Model weights are hosted on HuggingFace due to file size constraints.
 
-📦 **Download:** https://huggingface.co/HarryT1211/DL_VQA/tree/main
+**Download:** https://huggingface.co/HarryT1211/DL_VQA/tree/main
 
 ### How to download
 ```python
@@ -55,7 +55,7 @@ snapshot_download(repo_id="HarryT1211/DL_VQA", local_dir="./A1_A2_model")
 ```
 
 
-## 📦 Dữ liệu (Dataset)
+## Dữ liệu (Dataset)
 
 Dự án sử dụng bộ dữ liệu **OpenViVQA** (Open Vietnamese Visual Question Answering) được công bố bởi UIT-NLP tại VLSP 2023. Đây là tập dữ liệu VQA quy mô lớn cho tiếng Việt với hình ảnh thực tế đa dạng trong nhiều ngữ cảnh đời sống tại Việt Nam (open-domain).
 
@@ -65,9 +65,9 @@ Dự án sử dụng bộ dữ liệu **OpenViVQA** (Open Vietnamese Visual Ques
     * **Kiểm thử (Test)**: 14,035 cặp câu hỏi - đáp[cite: 1].
 * **Đặc điểm**: Mỗi hình ảnh đi kèm với ít nhất 3 câu hỏi liên quan đến các thuộc tính như số lượng, màu sắc, vị trí, hoặc nhận diện vật thể.
 * **Tải dữ liệu**: Dữ liệu được cấu hình để tự động tải từ HuggingFace Hub thông qua các notebook huấn luyện[cite: 1].
-    * 🤗 HuggingFace: [uitnlp/OpenViVQA-dataset](https://huggingface.co/datasets/uitnlp/OpenViVQA-dataset)
+    * HuggingFace: [uitnlp/OpenViVQA-dataset](https://huggingface.co/datasets/uitnlp/OpenViVQA-dataset)
 
-## 🚀 Cài đặt
+## Cài đặt
 
 Cài đặt các thư viện cần thiết để chạy huấn luyện và giao diện demo:
 ```bash
@@ -91,7 +91,7 @@ Sau khi khởi chạy, truy cập:
 http://localhost:7860
 ```
 
-### ✨ Tính năng
+### Tính năng
 
 Tại giao diện, bạn có thể:
 - Tải lên một hình ảnh (JPG, PNG)
@@ -106,7 +106,7 @@ Tại giao diện, bạn có thể:
 
 ---
 
-## 🔁 Quy trình thực hiện
+## Quy trình thực hiện
 
 ### 1. Chuẩn bị từ điển
 - Chạy các cell đầu trong `a1-a2.ipynb`
@@ -177,7 +177,7 @@ Dự án được thực hiện bởi sinh viên
 
 ---
 
-## 📝 Bản quyền
+## Bản quyền
 
 Dự án phục vụ mục đích **học thuật** trong môn *Deep Learning*.
 
