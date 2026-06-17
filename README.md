@@ -1,188 +1,182 @@
-# OpenViVQA - Vietnamese Visual Question Answering
+# OpenViVQA — Vietnamese Visual Question Answering
 
-Hệ thống trả lời câu hỏi dựa trên hình ảnh (Visual Question Answering - VQA) cho các hình ảnh thực tế tại Việt Nam (open-domain). Dự án nghiên cứu và so sánh 5 kiến trúc mô hình khác nhau, từ các kiến trúc Modular truyền thống đến các mô hình hội tụ đa phương thức (Multimodal Foundation Models) hiện đại nhất.
+A research project benchmarking five VQA architectures on the **OpenViVQA** dataset — from traditional modular encoder-decoder models to modern multimodal foundation models fine-tuned on Vietnamese data.
 
-## Danh sách mô hình
+> 📄 Built as a final project for the Deep Learning course at Ton Duc Thang University (TDTU), 2026.
 
-| Model | Kiến trúc | Ghi chú |
-|-------|-----------|---------|
-| **A1** | ResNet50 + PhoBERT + LSTM Decoder | Baseline sử dụng cơ chế Attention Pooling để nén đặc trưng. |
-| **A2** | ResNet50 + PhoBERT + Transformer Decoder | Cải tiến baseline bằng cách cho phép Decoder tương tác với toàn bộ token ảnh/chữ. |
-| **B1** | Qwen2-VL-2B-Instruct (Zero-shot) | Sử dụng trực tiếp sức mạnh của mô hình Pretrained lớn mà không cần huấn luyện. |
-| **B2 (SFT)** | Qwen2-VL-2B + QLoRA | Tinh chỉnh (Fine-tuning) mô hình Qwen2-VL trên tập dữ liệu OpenViVQA. |
-| **B2 (DPO)** | Qwen2-VL-2B + RLHF | Tối ưu hóa mô hình sau SFT bằng kỹ thuật Direct Preference Optimization (DPO). |
+---
 
-## Kết quả thực nghiệm
+## Results
 
-Kết quả được đánh giá trên tập kiểm thử OpenViVQA với các độ đo chính:
+Evaluated on the OpenViVQA test set (14,035 QA pairs):
 
-| Mô hình | Accuracy (%) | BLEU | ROUGE-L | BERTScore (F1) |
-| :--- | :---: | :---: | :---: | :---: |
-| **A1 (CNN-LSTM)** | 1.00 | 12.27 | 37.89 | 77.68 |
-| **A2 (Transformer)** | 6.00 | 19.14 | 43.91 | 80.36 |
-| **B1 (Zero-shot)** | 0.00 | 13.35 | 39.36 | 73.43 |
+| Model | Architecture | Accuracy (%) | BLEU | ROUGE-L | METEOR | BERTScore (F1) |
+| :--- | :--- | :---: | :---: | :---: | :---: | :---: |
+| **A1** | ResNet-50 + PhoBERT + LSTM | 1.00 | 12.27 | 37.89 | — | 77.68 |
+| **A2** | ResNet-50 + PhoBERT + Transformer | 6.00 | 19.14 | 43.91 | — | 80.36 |
+| **B1** | Qwen2-VL-2B (Zero-shot) | 0.00 | 13.35 | 39.36 | — | 73.43 |
+| **B2 (SFT)** | Qwen2-VL-2B + QLoRA | **14.00** | **33.40** | **61.80** | **59.10** | **85.60** |
+| **B2 (DPO)** | Qwen2-VL-2B + QLoRA + DPO | 0.00 | 6.00 | 33.70 | 25.20 | — |
 
-*Lưu ý: Kết quả trên được trích xuất từ file `Evaluation_All_Models.ipynb`. Mô hình A2 cho thấy sự vượt trội rõ rệt so với A1 nhờ cơ chế Attention linh hoạt của Transformer.*
+**Key findings:**
+- B2 (SFT) outperforms the from-scratch Transformer baseline (A2) by **+18 ROUGE-L points** and **+5.2 BERTScore points**
+- B1 zero-shot accuracy is 0% due to language/format mismatch with Vietnamese ground-truth, but semantic scores (ROUGE-L 39.4, BERTScore 73.4) show the model understands the content
+- DPO degraded performance on all metrics — attributed to small preference dataset (190 pairs) and format drift from exact-match ground-truth
 
-## Cấu trúc dự án
-```text
-├── app.py                      # Giao diện Demo (Gradio) tích hợp cả 5 mô hình
-├── vocab.json                  # Từ điển câu trả lời cho mô hình A1, A2
+---
+
+## Models
+
+| ID | Architecture | Notes |
+|---|---|---|
+| **A1** | ResNet-50 + PhoBERT + LSTM Decoder | Baseline; uses attention pooling to compress visual+text features into a single vector |
+| **A2** | ResNet-50 + PhoBERT + Transformer Decoder | Replaces LSTM with multi-head cross-attention; decoder attends directly to all image/text tokens |
+| **B1** | Qwen2-VL-2B-Instruct (Zero-shot) | No fine-tuning; tests raw capability of a pretrained multimodal LLM on Vietnamese |
+| **B2 (SFT)** | Qwen2-VL-2B + QLoRA | Fine-tuned on 30,833 Vietnamese QA pairs; 1.64% trainable parameters via LoRA |
+| **B2 (DPO)** | Qwen2-VL-2B + QLoRA + DPO | Post-SFT alignment using Direct Preference Optimization on 190 preference pairs |
+
+---
+
+## Dataset
+
+**OpenViVQA** — published by UIT-NLP at VLSP 2023. Large-scale open-domain VQA dataset for Vietnamese with real-world images covering everyday contexts in Vietnam.
+
+| Split | QA Pairs |
+|---|---|
+| Train | 30,833 |
+| Validation | 3,545 |
+| Test | 14,035 |
+
+Each image comes with at least 3 questions covering attributes like quantity, color, position, and object recognition.
+
+- 🤗 HuggingFace: [uitnlp/OpenViVQA-dataset](https://huggingface.co/datasets/uitnlp/OpenViVQA-dataset)
+- 📦 Kaggle: [windyy261203/openvivqa](https://www.kaggle.com/datasets/windyy261203/openvivqa)
+
+---
+
+## Project Structure
+
+```
+├── app.py                          # Gradio demo — compare all 5 models side by side
+├── vocab.json                      # Answer vocabulary for A1, A2
+├── requirements.txt
 ├── notebooks/
-│   ├── A1_A2.ipynb             # Huấn luyện mô hình Modular (A1 & A2)
-│   ├── ZeroShot_B1_Model.ipynb  # Đánh giá khả năng Zero-shot (B1)
-│   ├── Fintuning_B2_model.ipynb # Tinh chỉnh mô hình bằng QLoRA (B2 SFT)
-│   ├── RLHF_DPO_Finetuning.ipynb# Tối ưu hóa bằng DPO (B2 DPO)
-│   └── Evaluation_All_Models.ipynb # Đánh giá tổng hợp và so sánh chéo
-├── data/openvivqa/             # Dữ liệu hình ảnh và câu hỏi (tự động tải)
-├── .gitignore             # File chặn các file rác/nặng
-├── requirements.txt       # Danh sách thư viện
-└── README.md              # Giới thiệu dự án
+│   ├── A1_A2.ipynb                 # Train modular models (A1 & A2)
+│   ├── ZeroShot_B1_Model.ipynb     # Zero-shot evaluation (B1)
+│   ├── Fintuning_B2_model.ipynb    # QLoRA fine-tuning (B2 SFT)
+│   ├── RLHF_DPO_Finetuning.ipynb  # DPO alignment (B2 DPO)
+│   └── Evaluation_All_Models.ipynb # Cross-model evaluation & metrics
+└── data/openvivqa/                 # Auto-downloaded from HuggingFace
 ```
 
-## Pretrained Models
+---
 
-Model weights are hosted on HuggingFace due to file size constraints.
+## Pretrained Weights
 
-**Download:** https://huggingface.co/HarryT1211/DL_VQA/tree/main
+Model weights are hosted on HuggingFace due to file size:
 
-### How to download
+🔗 **[HarryT1211/DL_VQA](https://huggingface.co/HarryT1211/DL_VQA/tree/main)**
+
 ```python
-from huggingface_hub import hf_hub_download, snapshot_download
+from huggingface_hub import snapshot_download
 
-# Download toàn bộ model
 snapshot_download(repo_id="HarryT1211/DL_VQA", local_dir="./A1_A2_model")
 ```
 
+---
 
-## Dữ liệu (Dataset)
+## Setup
 
-Dự án sử dụng bộ dữ liệu **OpenViVQA** (Open Vietnamese Visual Question Answering) được công bố bởi UIT-NLP tại VLSP 2023. Đây là tập dữ liệu VQA quy mô lớn cho tiếng Việt với hình ảnh thực tế đa dạng trong nhiều ngữ cảnh đời sống tại Việt Nam (open-domain).
-
-* **Quy mô dữ liệu**:
-    * **Huấn luyện (Train)**: 30,833 cặp câu hỏi - đáp.
-    * **Kiểm định (Val)**: 3,545 cặp câu hỏi - đáp.
-    * **Kiểm thử (Test)**: 14,035 cặp câu hỏi - đáp[cite: 1].
-* **Đặc điểm**: Mỗi hình ảnh đi kèm với ít nhất 3 câu hỏi liên quan đến các thuộc tính như số lượng, màu sắc, vị trí, hoặc nhận diện vật thể.
-* **Tải dữ liệu**: Dữ liệu được cấu hình để tự động tải từ HuggingFace Hub thông qua các notebook huấn luyện[cite: 1].
-    * HuggingFace: [uitnlp/OpenViVQA-dataset](https://huggingface.co/datasets/uitnlp/OpenViVQA-dataset)
-
-## Cài đặt
-
-Cài đặt các thư viện cần thiết để chạy huấn luyện và giao diện demo:
 ```bash
 pip install -r requirements.txt
 ```
-## 🖥️ Chạy Demo
 
-Giao diện người dùng được xây dựng bằng **Gradio**, hỗ trợ:
-- So sánh kết quả trực quan giữa 5 mô hình
-- Đo lường thời gian xử lý
+---
 
-### ▶️ Cách chạy
+## Demo
+
+Built with **Gradio** — compare all five models on any image and Vietnamese question.
 
 ```bash
 python app.py
 ```
 
-Sau khi khởi chạy, truy cập:
+Then open `http://localhost:7860` in your browser.
 
+**Features:**
+- Upload any image (JPG, PNG)
+- Type a Vietnamese question
+- Select one or more models (A1, A2, B1, B2 SFT, B2 DPO)
+- See the answer + inference time per model
+
+---
+
+## Pipeline
+
+| Step | Notebook | Description |
+|---|---|---|
+| 1 | `A1_A2.ipynb` | Generate `vocab.json`, train A1 and A2 |
+| 2 | `ZeroShot_B1_Model.ipynb` | Zero-shot inference with Qwen2-VL |
+| 3 | `Fintuning_B2_model.ipynb` | QLoRA fine-tuning on OpenViVQA |
+| 4 | `RLHF_DPO_Finetuning.ipynb` | DPO alignment post-SFT |
+| 5 | `Evaluation_All_Models.ipynb` | Compute Accuracy, BLEU, ROUGE-L, METEOR, BERTScore |
+
+---
+
+## Authors
+
+Students at the **Faculty of Information Technology, Ton Duc Thang University (TDTU)**
+
+| Name | Student ID |
+|---|---|
+| Pham Quoc Hung | 523H0135 |
+| Dinh Bui Khanh Huy | 523H0136 |
+| Nguyen Dong Quan | 523H0171 |
+
+---
+
+## Credits
+
+- Dataset: [UIT-NLP](https://github.com/uitnlp) (VLSP 2023)
+- PhoBERT: [VinAI Research](https://github.com/VinAIResearch/PhoBERT)
+- Qwen2-VL: [Alibaba Qwen Team](https://github.com/QwenLM/Qwen2-VL)
+
+*This project is for academic purposes under the Deep Learning course.*
+
+---
+
+<details>
+<summary>📖 Đọc bằng tiếng Việt</summary>
+
+## Giới thiệu
+
+Hệ thống trả lời câu hỏi dựa trên hình ảnh (Visual Question Answering - VQA) cho các hình ảnh thực tế tại Việt Nam (open-domain). Dự án nghiên cứu và so sánh 5 kiến trúc mô hình khác nhau, từ các kiến trúc Modular truyền thống đến các mô hình hội tụ đa phương thức (Multimodal Foundation Models) hiện đại nhất.
+
+## Kết quả
+
+| Mô hình | Accuracy (%) | BLEU | ROUGE-L | METEOR | BERTScore (F1) |
+| :--- | :---: | :---: | :---: | :---: | :---: |
+| A1 (CNN-LSTM) | 1.00 | 12.27 | 37.89 | — | 77.68 |
+| A2 (Transformer) | 6.00 | 19.14 | 43.91 | — | 80.36 |
+| B1 (Zero-shot) | 0.00 | 13.35 | 39.36 | — | 73.43 |
+| B2 (SFT) | **14.00** | **33.40** | **61.80** | **59.10** | **85.60** |
+| B2 (DPO) | 0.00 | 6.00 | 33.70 | 25.20 | — |
+
+## Cài đặt và chạy demo
+
+```bash
+pip install -r requirements.txt
+python app.py
 ```
-http://localhost:7860
-```
 
-### Tính năng
+Truy cập `http://localhost:7860` để sử dụng giao diện Gradio so sánh 5 mô hình.
 
-Tại giao diện, bạn có thể:
-- Tải lên một hình ảnh (JPG, PNG)
-- Nhập câu hỏi tiếng Việt liên quan đến ảnh
-- Chọn mô hình:
-  - A1
-  - A2
-  - B1
-  - B2 SFT
-  - B2 DPO
-- Xem câu trả lời + thời gian suy luận
+## Tác giả
 
----
+Dự án được thực hiện bởi sinh viên Khoa Công nghệ Thông tin – Đại học Tôn Đức Thắng (TDTU):
 
-## Quy trình thực hiện
+- Phạm Quốc Hưng – 523H0135
+- Đinh Bùi Khánh Huy – 523H0136
+- Nguyễn Đông Quân – 523H0171
 
-### 1. Chuẩn bị từ điển
-- Chạy các cell đầu trong `a1-a2.ipynb`
-- Sinh file `vocab.json` cho mô hình A1, A2
-
----
-
-### 2. Huấn luyện Modular (Nhóm A)
-
-Notebook: `a1-a2.ipynb`
-
-- A1: ResNet50 + PhoBERT + LSTM
-- A2: ResNet50 + PhoBERT + Transformer
-
----
-
-### 3. Đánh giá Zero-shot (B1)
-
-Notebook: `ZeroShot_B1_Model.ipynb`
-
-- Sử dụng trực tiếp Qwen2-VL
-- Không cần huấn luyện
-
----
-
-### 4. Tinh chỉnh VLM (B2 SFT)
-
-Notebook: `Fintuning_B2_model.ipynb`
-
-- Kỹ thuật: **QLoRA**
-- Mục tiêu: thích nghi dữ liệu tiếng Việt
-
----
-
-### 5. Tối ưu hóa Alignment (B2 DPO)
-
-Notebook: `RLHF_DPO_Finetuning.ipynb`
-
-- Áp dụng **Direct Preference Optimization (DPO)**
-- Cải thiện:
-  - Độ chính xác
-  - Độ ngắn gọn
-  - Tính tự nhiên của câu trả lời
-
----
-
-### 6. Đánh giá tổng hợp
-
-Notebook: `Evaluation_All_Models.ipynb`
-
-- Tính các metrics:
-  - Accuracy
-  - BLEU
-  - ROUGE-L
-  - BERTScore
-- So sánh định lượng & định tính
-
----
-
-## Tác giả (Authors)
-
-Dự án được thực hiện bởi sinh viên  
-**Khoa Công nghệ Thông tin – Đại học Tôn Đức Thắng (TDTU)**
-
-- Phạm Quốc Hưng – MSSV: 523H0135
-- Đinh Bùi Khánh Huy – MSSV: 523H0136
-- Nguyễn Đông Quân – MSSV: 523H0171
-
----
-
-## Bản quyền
-
-Dự án phục vụ mục đích **học thuật** trong môn *Deep Learning*.
-
-- Dataset: UIT-NLP (VLSP 2023)
-- PhoBERT: VinAI
-- Qwen2-VL: Alibaba Qwen Team
-
-Mọi bản quyền thuộc về các đơn vị sở hữu tương ứng.
+</details>
